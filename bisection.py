@@ -1,7 +1,9 @@
 import numpy as np
 
+#The Bisection algorithm halves the interval in which a function f(x) = 0, with a < x < b.
 def bisect(a, b, f, tol, max_iter = 100):
     i = 0
+    #the function should change sign over the interval
     if(f(a) * f(b) > 0):
         return ValueError
     while(i < max_iter):
@@ -17,6 +19,7 @@ def bisect(a, b, f, tol, max_iter = 100):
         print(p)
     return p
 
+#The Picard algorithm iteratively calculates p_n+1 as a result of the fixed point iteration p_n+1 = g(p_n)
 def picard(p_n, g, tol, max_iter):
     i = 0
     while(i < max_iter):
@@ -29,7 +32,9 @@ def picard(p_n, g, tol, max_iter):
         i += 1
     return p
 
+#The newton algorithm calculates the new value p as the old value minus the tangent there.
 def newton(p_n, f, df, tol, max_iter):
+    #The derivative should not be too small, as the algorithm will yield unstable results.
     if(df(p_n) < 1e-2):
         return ValueError 
     i = 0
@@ -49,6 +54,7 @@ def f(x):
 def df(x):
     return 1 + np.sin(x)
 
+#fixed-point method
 def g(x):
     return 4/(x * x + 3)
     
@@ -56,18 +62,22 @@ tol = pow(10, -2)
 max_iter = 100
 
 while(True):
+    #The user can choose which algorithm to use
     method = input("Which method would you like to try? ([B/N/P]): ")
     if(method == 'B' or method == 'N' or method == 'P'):
         if(method == 'B'):
+            #The user can choose the interval in which to apply Bisection
             a = float(input("Give us the left of the interval: "))
             b = float(input("Give us the right of the interval: "))
             root = bisect(a, b, f, tol, max_iter)
             print(root)
         if(method == 'N'):
+            #The user can choose the initial value
             p_0 = float(input("Give us the initial value: "))
             root = newton(p_0, f, df, tol, max_iter)
             print(root)
         if(method == 'P'):
+            #The user can choose the initial value
             p_0 = float(input("Give us the initial value: "))
             root = picard(p_0, g, tol, max_iter)
             print(root)
