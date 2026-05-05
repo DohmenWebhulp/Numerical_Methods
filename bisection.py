@@ -1,5 +1,5 @@
 import numpy as np
-
+from decimal import Decimal
 #The Bisection algorithm halves the interval in which a function f(x) = 0, with a < x < b.
 def bisect(a, b, f, tol, max_iter = 100):
     i = 0
@@ -33,14 +33,15 @@ def picard(p_n, g, tol, max_iter):
     return p
 
 #The newton algorithm calculates the new value p as the old value minus the tangent there.
-def newton(p_n, f, df, tol, max_iter):
+def newton(p_n, a, f, df, tol, max_iter):
     #The derivative should not be too small, as the algorithm will yield unstable results.
     if(df(p_n) < 1e-2):
         return ValueError 
     i = 0
+    a = Decimal(a)
     while(i < max_iter):
-        p = p_n - (f(p_n)/df(p_n))
-        if(abs(p - p_n) < tol and abs(f(p)/df(p)) < tol):
+        p = p_n - (f(p_n, a)/df(p_n))
+        if(abs(p - p_n) < tol and abs(f(p, a)/df(p)) < tol):
             print(f"Number of steps = {i + 1}")
             break
         p_n = p
@@ -48,19 +49,19 @@ def newton(p_n, f, df, tol, max_iter):
         i += 1
     return p
 
-def f(x):
-    return x - np.cos(x)
+def f(x, a):
+    return x*x - a
 
 def df(x):
-    return 1 + np.sin(x)
+    return 2*x
 
 #fixed-point method
 def g(x):
     return 4/(x * x + 3)
     
-tol = pow(10, -2)
+tol = pow(10, -12)
 max_iter = 100
-
+"""
 while(True):
     #The user can choose which algorithm to use
     method = input("Which method would you like to try? ([B/N/P]): ")
@@ -70,12 +71,12 @@ while(True):
             a = float(input("Give us the left of the interval: "))
             b = float(input("Give us the right of the interval: "))
             root = bisect(a, b, f, tol, max_iter)
-            print(root)
+            print(np.decimal(root))
         if(method == 'N'):
             #The user can choose the initial value
-            p_0 = float(input("Give us the initial value: "))
-            root = newton(p_0, f, df, tol, max_iter)
-            print(root)
+            a = float(input("Give us the targeted root: "))
+            root = newton(1, a, f, df, tol, max_iter)
+            print(np.decimal(root))
         if(method == 'P'):
             #The user can choose the initial value
             p_0 = float(input("Give us the initial value: "))
@@ -83,3 +84,7 @@ while(True):
             print(root)
     else:
         print("Try Again!")
+"""
+root_2 = newton(1, 2, f, df, tol, max_iter)
+root_3 = newton(1, 3, f, df, tol, max_iter)
+root_5 = newton(1, 5, f, df, tol, max_iter)
